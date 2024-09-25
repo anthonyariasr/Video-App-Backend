@@ -73,8 +73,11 @@ async def add_video(video_data: VideoCreate, file: UploadFile = File(...), db: S
     VIDEO_DIR = "videos"
     os.makedirs(VIDEO_DIR, exist_ok=True)
     file_location = os.path.join(VIDEO_DIR, file.filename)
+
+    # Utiliza await para leer el contenido del archivo
+    content = await file.read()
     with open(file_location, "wb") as f:
-        f.write(file.file.read())
+        f.write(content)
 
     new_video = Video(
         title=video_data.title,
@@ -141,3 +144,5 @@ def remove_from_favorites(video_id: int, db: Session = Depends(get_db)):
             video.isFavorite = False
         db.commit()
     return {"status": "video removed from favorites"}
+
+
