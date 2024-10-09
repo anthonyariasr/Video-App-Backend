@@ -5,9 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video App</title>
     <link rel="stylesheet" href="output.css">
+    <style>
+        /* Estilo para la barra de navegación */
+        nav {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Estilo para el título de la página */
+        nav h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Estilo para la barra de búsqueda */
+        #search-bar {
+            padding: 5px 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        /* Estilo para los botones en la barra de navegación */
+        .nav-button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilo para las listas de videos en la página de inicio */
+        .video-list {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+            gap: 15px;
+        }
+
+        .video-card {
+            background-color: #333333;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 200px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .video-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Estilo para ocultar secciones */
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
-<body class="bg-zinc-800">
-    <!--Edit Here-->
-<script src="src/index.js"></script>
+<body class="bg-main text-white">
+
+    <!-- Barra de navegación -->
+    <nav>
+        <div>
+            <h1 id="nav-home">Video App</h1>
+        </div>
+        <div>
+            <input type="text" id="search-bar" placeholder="Buscar videos...">
+            <button id="search-button" class="nav-button">Buscar</button>
+            <button id="nav-add-video" class="nav-button">Agregar Video</button>
+        </div>
+    </nav>
+
+    <!-- Sección Página de Inicio -->
+    <section id="home-section" class="p-6">
+        <h2 class="text-2xl font-bold mb-4 text-accent">Videos más vistos</h2>
+        <div id="top-videos-list" class="video-list">
+            <!-- Aquí se llenarán dinámicamente las Cards de los 10 videos más vistos -->
+            <div class="video-card" onclick="playVideo('video1')">
+                <h3 class="text-lg font-bold">Título del Video 1</h3>
+                <p>5000 vistas</p>
+            </div>
+            <div class="video-card" onclick="playVideo('video2')">
+                <h3 class="text-lg font-bold">Título del Video 2</h3>
+                <p>4500 vistas</p>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-bold mt-8 mb-4 text-accent">Videos Favoritos Recientes</h2>
+        <div id="favorite-videos-list" class="video-list">
+            <!-- Aquí se llenarán dinámicamente las Cards de los 10 videos favoritos más recientes -->
+            <div class="video-card" onclick="playVideo('videoFav1')">
+                <h3 class="text-lg font-bold">Título del Video Favorito 1</h3>
+                <p>Favorito desde: 2024-10-01</p>
+            </div>
+            <div class="video-card" onclick="playVideo('videoFav2')">
+                <h3 class="text-lg font-bold">Título del Video Favorito 2</h3>
+                <p>Favorito desde: 2024-09-28</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección para mostrar los resultados de búsqueda -->
+    <section id="search-results-section" class="hidden p-6">
+        <h2 class="text-2xl font-bold mb-4 text-accent">Resultados de búsqueda</h2>
+        <div id="search-results-list" class="video-list">
+            <!-- Aquí se llenarán dinámicamente las Cards de los resultados de búsqueda -->
+        </div>
+    </section>
+
+    <!-- Sección para agregar videos -->
+    <section id="add-video-section" class="hidden p-6">
+        <h2 class="text-2xl font-bold mb-6 text-accent">Agregar Nuevo Video</h2>
+        <form id="add-video-form">
+            <div class="mb-6">
+                <label for="video-title" class="block text-lg font-semibold mb-2">Título del Video</label>
+                <input type="text" id="video-title" placeholder="Ingresa el título del video" class="input-field">
+            </div>
+            <div class="mb-6">
+                <label for="video-description" class="block text-lg font-semibold mb-2">Descripción</label>
+                <textarea id="video-description" placeholder="Ingresa una descripción" class="input-field"></textarea>
+            </div>
+            <div class="mb-6">
+                <label for="video-file" class="block text-lg font-semibold mb-2">Selecciona un archivo de video</label>
+                <input type="file" id="video-file" class="input-field">
+            </div>
+            <button type="submit" class="button-primary px-4 py-2 rounded-md">Subir Video</button>
+        </form>
+    </section>
+
+    <script src="src/index.js"></script>
 </body>
 </html>
