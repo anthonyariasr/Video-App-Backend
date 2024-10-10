@@ -75,8 +75,8 @@ async def add_video(
     thumbnail: Optional[UploadFile] = File(None),  # Thumbnail opcional
     db: Session = Depends(get_db)
 ):
-    VIDEO_DIR = "videos"
-    THUMBNAIL_DIR = "thumbnails"
+    VIDEO_DIR = "app/videos"
+    THUMBNAIL_DIR = "app/assets/thumbnails"
     os.makedirs(VIDEO_DIR, exist_ok=True)
     os.makedirs(THUMBNAIL_DIR, exist_ok=True)
 
@@ -87,7 +87,7 @@ async def add_video(
         f.write(content)
 
     # Guardar el archivo de thumbnail si se proporciona, de lo contrario usar uno por defecto
-    thumbnail_path = "assets/default_thumbnail.jpg"  # Asegurarte de que la ruta sea siempre válida
+    thumbnail_path = "/app/assets/default_thumbnail.png"  # Asegurarte de que la ruta sea siempre válida
     if thumbnail:
         thumbnail_location = os.path.join(THUMBNAIL_DIR, thumbnail.filename)
         thumbnail_content = await thumbnail.read()
