@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 # FastAPI
-from fastapi import FastAPI, Depends, File, UploadFile
+from fastapi import FastAPI, Depends, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 # SQLAlchemy
 from sqlalchemy.orm import Session
@@ -11,8 +11,7 @@ from app.database import Base
 from app.models import Video, Comment, FavoriteVideo
 from app.schemas import VideoCreate, VideoResponse, CommentResponse, CommentCreate
 
-from typing import List
-
+from typing import Optional, List
 # Crear todas las tablas
 Base.metadata.create_all(bind=engine)
 
@@ -69,21 +68,38 @@ def get_video_comments(video_id: int, db: Session = Depends(get_db)):
 
 # Crear y Guardar un video
 @app.post("/videos", response_model=VideoResponse)
-async def add_video(video_data: VideoCreate, file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def add_video(
+    title: str = Form(...),
+    description: Optional[str] = Form(None),
+    file: UploadFile = File(...),
+    thumbnail: Optional[UploadFile] = File(None),  # Thumbnail opcional
+    db: Session = Depends(get_db)
+):
     VIDEO_DIR = "videos"
+    THUMBNAIL_DIR = "thumbnails"
     os.makedirs(VIDEO_DIR, exist_ok=True)
-    file_location = os.path.join(VIDEO_DIR, file.filename)
+    os.makedirs(THUMBNAIL_DIR, exist_ok=True)
 
-    # Utiliza await para leer el contenido del archivo
+    # Guardar el archivo de video
+    file_location = os.path.join(VIDEO_DIR, file.filename)
     content = await file.read()
     with open(file_location, "wb") as f:
         f.write(content)
 
+    # Guardar el archivo de thumbnail si se proporciona, de lo contrario usar uno por defecto
+    thumbnail_path = "assets/default_thumbnail.jpg"  # Asegurarte de que la ruta sea siempre válida
+    if thumbnail:
+        thumbnail_location = os.path.join(THUMBNAIL_DIR, thumbnail.filename)
+        thumbnail_content = await thumbnail.read()
+        with open(thumbnail_location, "wb") as f:
+            f.write(thumbnail_content)
+        thumbnail_path = thumbnail_location  # Solo se asigna si el thumbnail fue cargado correctamente
+
     new_video = Video(
-        title=video_data.title,
-        description=video_data.description,
+        title=title,
+        description=description,
         videoPath=file_location,
-        thumbnailPath=video_data.thumbnailPath,
+        thumbnailPath=thumbnail_path,
         creationDate=datetime.utcnow()
     )
     db.add(new_video)

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 # Esquema para la creación de un video
 class VideoCreate(BaseModel):
@@ -12,12 +13,10 @@ class VideoCreate(BaseModel):
 class VideoResponse(BaseModel):
     id: int
     title: str
-    creationDate: datetime
-    description: str
+    description: Optional[str] = None
     videoPath: str
-    thumbnailPath: str
+    thumbnailPath: str  # Asegúrate de que este campo no sea opcional
     viewsCount: int
-    isFavorite: bool
 
     class Config:
         orm_mode = True

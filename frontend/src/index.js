@@ -81,6 +81,63 @@ function playVideo(videoId) {
     // Aquí puedes agregar la lógica para redirigir a la página de reproducción del video
 }
 
+document.getElementById("add-video-form").addEventListener("submit", async (e) => {
+    e.preventDefault(); // Evitar el comportamiento predeterminado del formulario
+
+    const title = document.getElementById("video-title").value;
+    const description = document.getElementById("video-description").value;
+    const fileInput = document.getElementById("video-file");
+    const thumbnailInput = document.getElementById("thumbnail-file");
+
+    // Validar archivo de video
+    const videoFile = fileInput.files[0];
+    if (!videoFile) {
+        alert("Por favor, selecciona un archivo de video.");
+        return;
+    }
+    if (videoFile.size > 10 * 1024 * 1024) { // 10 MB
+        alert("El tamaño del archivo de video no debe superar los 10 MB.");
+        return;
+    }
+
+    // Validar archivo de thumbnail (si existe)
+    let thumbnailFile = null;
+    if (thumbnailInput.files.length > 0) {
+        thumbnailFile = thumbnailInput.files[0];
+        if (thumbnailFile.size > 2 * 1024 * 1024) { // 2 MB
+            alert("El tamaño del archivo del thumbnail no debe superar los 2 MB.");
+            return;
+        }
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("file", videoFile);
+    if (thumbnailFile) {
+        formData.append("thumbnail", thumbnailFile);
+    }
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/videos", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert("Video subido exitosamente con ID: " + data.id);
+            // Actualizar la lista de videos más vistos después de la subida
+            loadTopVideos();
+        } else {
+            alert("Error al subir el video.");
+        }
+    } catch (error) {
+        console.error("Error al subir el video:", error);
+        alert("Hubo un error al subir el video.");
+    }
+});
+
 // Cargar videos al iniciar la página
 window.onload = function() {
     loadTopVideos();

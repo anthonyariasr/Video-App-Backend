@@ -9,8 +9,8 @@ class Video(Base):
     title = Column(String, index=True)
     creationDate = Column(DateTime)
     description = Column(String)
-    videoPath = Column(String)
-    thumbnailPath = Column(String)
+    videoPath = Column(String, nullable=False)
+    thumbnailPath = Column(String, default="assets/default_thumbnail.jpg", nullable=False)
     viewsCount = Column(Integer, default=0)
     isFavorite = Column(Boolean, default=False)
 
