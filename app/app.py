@@ -12,6 +12,7 @@ from app.models import Video, Comment, FavoriteVideo
 from app.schemas import VideoCreate, VideoResponse, CommentResponse, CommentCreate
 
 from typing import Optional, List
+
 # Crear todas las tablas
 Base.metadata.create_all(bind=engine)
 
@@ -20,7 +21,7 @@ app = FastAPI()
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"],  # Permite solicitudes del puerto 5000
+    allow_origins=["http://127.0.0.1:5500"],  # Permite solicitudes del puerto 5500
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, PATCH, DELETE, etc.)
     allow_headers=["*"],  # Permite todos los headers
@@ -90,8 +91,14 @@ async def add_video(
     with open(file_location, "wb") as f:
         f.write(content)
 
-    # Guardar el archivo de thumbnail si se proporciona, de lo contrario usar uno por defecto
-    thumbnail_path = "app/assets/default_thumbnail.png"  # Ruta por defecto para el thumbnail
+    # Configurar la ruta del thumbnail predeterminado
+    default_thumbnail = os.path.abspath("app/assets/default_thumbnail.png")
+    thumbnail_path = default_thumbnail
+
+    if not os.path.exists(default_thumbnail):
+        print("Error: El archivo de la miniatura predeterminada no existe en la ruta especificada.")
+
+    # Guardar el archivo de thumbnail si se proporciona
     if thumbnail:
         thumbnail_extension = thumbnail.filename.split(".")[-1]  # Obtener la extensión del thumbnail
         thumbnail_name = f"{thumbnail.filename.split('.')[0]}_{timestamp}.{thumbnail_extension}"
@@ -99,7 +106,7 @@ async def add_video(
         thumbnail_content = await thumbnail.read()
         with open(thumbnail_location, "wb") as f:
             f.write(thumbnail_content)
-        thumbnail_path = thumbnail_location  # Solo se asigna si el thumbnail fue cargado correctamente
+        thumbnail_path = thumbnail_location  # Actualizar la ruta si el thumbnail fue cargado correctamente
 
     # Crear el nuevo objeto Video y guardarlo en la base de datos
     new_video = Video(
@@ -167,5 +174,3 @@ def remove_from_favorites(video_id: int, db: Session = Depends(get_db)):
             video.isFavorite = False
         db.commit()
     return {"status": "video removed from favorites"}
-
-

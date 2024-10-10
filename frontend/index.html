@@ -70,13 +70,29 @@
                 <textarea id="video-description" placeholder="Ingresa una descripción" class="input-field" maxlength="300"></textarea>
             </div>
             <div class="mb-6">
-                <label for="thumbnail-file" class="block text-lg font-semibold mb-2">Selecciona un thumbnail (.jpg, max 2MB)</label>
-                <input type="file" id="thumbnail-file" class="input-field" accept=".jpg">
+                <label for="thumbnail-file" class="block text-lg font-semibold mb-2">Selecciona un thumbnail (max 2MB)</label>
+                <input type="file" id="thumbnail-file" class="input-field" accept=".jpg, .jpeg, .png">
             </div>
             <button type="submit" class="button-primary px-4 py-2 rounded-md">Subir Video</button>
         </form>
     </section>
 
+    <!-- Indicador de carga -->
+    <div id="loading-indicator" class="hidden p-6 text-center">
+        <p class="text-lg font-semibold">Cargando el video... Por favor espera.</p>
+        <div class="loader"></div> <!-- Loader animado (CSS) -->
+    </div>
+
+    <!-- Mensaje de error -->
+    <div id="error-message" class="hidden p-6 text-center text-red-600">
+        <p>Error al cargar el video. Por favor revisa los campos e inténtalo de nuevo.</p>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div id="success-message" class="hidden p-6 text-center text-green-600">
+        <p>¡Video subido exitosamente!</p>
+        <button id="return-home" class="button-primary mt-4 px-4 py-2 rounded-md">Volver a la página de inicio</button>
+    </div>
 
     <script src="src/index.js"></script>
 </body>

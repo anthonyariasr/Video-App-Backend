@@ -9,14 +9,14 @@ class VideoCreate(BaseModel):
     videoPath: str
     thumbnailPath: str
 
-# Esquema para devolver un video
 class VideoResponse(BaseModel):
     id: int
     title: str
-    description: Optional[str] = None
+    description: Optional[str]
     videoPath: str
-    thumbnailPath: str  # Asegúrate de que este campo no sea opcional
+    thumbnailPath: str  # Asegúrate de que esté definido como una cadena de texto
     viewsCount: int
+    isFavorite: bool
 
     class Config:
         orm_mode = True
