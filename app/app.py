@@ -20,7 +20,7 @@ app = FastAPI()
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Permite solicitudes del puerto 3000
+    allow_origins=["http://127.0.0.1:5500"],  # Permite solicitudes del puerto 5000
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, PATCH, DELETE, etc.)
     allow_headers=["*"],  # Permite todos los headers
