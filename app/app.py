@@ -66,7 +66,6 @@ def get_video_comments(video_id: int, db: Session = Depends(get_db)):
 
 """ POST Methods """
 
-# Crear y Guardar un video
 @app.post("/videos", response_model=VideoResponse)
 async def add_video(
     title: str = Form(...),
@@ -80,21 +79,29 @@ async def add_video(
     os.makedirs(VIDEO_DIR, exist_ok=True)
     os.makedirs(THUMBNAIL_DIR, exist_ok=True)
 
-    # Guardar el archivo de video
-    file_location = os.path.join(VIDEO_DIR, file.filename)
+    # Crear un timestamp y agregarlo al nombre del archivo para evitar duplicados
+    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    file_extension = file.filename.split(".")[-1]  # Obtener la extensión del archivo
+    file_name = f"{file.filename.split('.')[0]}_{timestamp}.{file_extension}"
+
+    # Guardar el archivo de video con el nuevo nombre
+    file_location = os.path.join(VIDEO_DIR, file_name)
     content = await file.read()
     with open(file_location, "wb") as f:
         f.write(content)
 
     # Guardar el archivo de thumbnail si se proporciona, de lo contrario usar uno por defecto
-    thumbnail_path = "/app/assets/default_thumbnail.png"  # Asegurarte de que la ruta sea siempre válida
+    thumbnail_path = "app/assets/default_thumbnail.png"  # Ruta por defecto para el thumbnail
     if thumbnail:
-        thumbnail_location = os.path.join(THUMBNAIL_DIR, thumbnail.filename)
+        thumbnail_extension = thumbnail.filename.split(".")[-1]  # Obtener la extensión del thumbnail
+        thumbnail_name = f"{thumbnail.filename.split('.')[0]}_{timestamp}.{thumbnail_extension}"
+        thumbnail_location = os.path.join(THUMBNAIL_DIR, thumbnail_name)
         thumbnail_content = await thumbnail.read()
         with open(thumbnail_location, "wb") as f:
             f.write(thumbnail_content)
         thumbnail_path = thumbnail_location  # Solo se asigna si el thumbnail fue cargado correctamente
 
+    # Crear el nuevo objeto Video y guardarlo en la base de datos
     new_video = Video(
         title=title,
         description=description,
