@@ -118,17 +118,48 @@ label {
     margin-top: 10px;
 }
 
-/* Estilo para el loader (indicador de carga) */
+/* Loader animado */
 .loader {
-    border: 8px solid #f3f3f3; /* Color gris claro */
-    border-top: 8px solid #3498db; /* Azul */
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    border: 8px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+    border-top-color: #3498db; /* Color principal de la animación */
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Barra de progreso lineal */
+.progress-bar-container {
+    width: 100%;
+    background-color: #2c2c2c;
+    border-radius: 5px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 8px;
+    width: 0;
+    background-color: #3498db;
+    animation: progress 3s linear infinite;
+}
+
+@keyframes progress {
+    0% {
+        width: 0;
+    }
+    50% {
+        width: 75%;
+    }
+    100% {
+        width: 100%;
+    }
 }

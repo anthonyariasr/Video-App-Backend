@@ -6,6 +6,11 @@ const searchResultsSection = document.getElementById("search-results-section");
 const navHome = document.getElementById("nav-home");
 const navAddVideo = document.getElementById("nav-add-video");
 
+const loadingIndicator = document.getElementById("loading-indicator");
+const errorMessage = document.getElementById("error-message");
+const successMessage = document.getElementById("success-message");
+const returnHomeButton = document.getElementById("return-home");
+
 // Función para mostrar una sección
 function showSection(section) {
     homeSection.classList.add("hidden");
@@ -81,8 +86,14 @@ function playVideo(videoId) {
     // Aquí puedes agregar la lógica para redirigir a la página de reproducción del video
 }
 
+// Evento para manejar la subida del video
 document.getElementById("add-video-form").addEventListener("submit", async (e) => {
     e.preventDefault(); // Evitar el comportamiento predeterminado del formulario
+
+    // Mostrar el indicador de carga y ocultar mensajes de error o éxito
+    loadingIndicator.classList.remove("hidden");
+    errorMessage.classList.add("hidden");
+    successMessage.classList.add("hidden");
 
     const title = document.getElementById("video-title").value;
     const description = document.getElementById("video-description").value;
@@ -92,30 +103,18 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
     // Validar archivo de video
     const videoFile = fileInput.files[0];
     if (!videoFile) {
-        alert("Por favor, selecciona un archivo de video.");
+        loadingIndicator.classList.add("hidden");
+        errorMessage.classList.remove("hidden");
+        errorMessage.textContent = "Por favor, selecciona un archivo de video.";
         return;
-    }
-    if (videoFile.size > 10 * 1024 * 1024) { // 10 MB
-        alert("El tamaño del archivo de video no debe superar los 10 MB.");
-        return;
-    }
-
-    // Validar archivo de thumbnail (si existe)
-    let thumbnailFile = null;
-    if (thumbnailInput.files.length > 0) {
-        thumbnailFile = thumbnailInput.files[0];
-        if (thumbnailFile.size > 2 * 1024 * 1024) { // 2 MB
-            alert("El tamaño del archivo del thumbnail no debe superar los 2 MB.");
-            return;
-        }
     }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", videoFile);
-    if (thumbnailFile) {
-        formData.append("thumbnail", thumbnailFile);
+    if (thumbnailInput.files.length > 0) {
+        formData.append("thumbnail", thumbnailInput.files[0]);
     }
 
     try {
@@ -124,18 +123,26 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
             body: formData,
         });
 
+        loadingIndicator.classList.add("hidden");
+
         if (response.ok) {
-            const data = await response.json();
-            alert("Video subido exitosamente con ID: " + data.id);
-            // Actualizar la lista de videos más vistos después de la subida
-            loadTopVideos();
+            successMessage.classList.remove("hidden");
         } else {
-            alert("Error al subir el video.");
+            errorMessage.classList.remove("hidden");
+            errorMessage.textContent = "Error al subir el video. Inténtalo de nuevo.";
         }
     } catch (error) {
         console.error("Error al subir el video:", error);
-        alert("Hubo un error al subir el video.");
+        loadingIndicator.classList.add("hidden");
+        errorMessage.classList.remove("hidden");
+        errorMessage.textContent = "Hubo un error al conectar con el servidor.";
     }
+});
+
+// Manejo del botón de éxito para volver a la página de inicio
+returnHomeButton.addEventListener("click", () => {
+    successMessage.classList.add("hidden");
+    showSection(homeSection);
 });
 
 // Cargar videos al iniciar la página

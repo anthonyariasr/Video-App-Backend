@@ -14,9 +14,8 @@ class VideoResponse(BaseModel):
     title: str
     description: Optional[str]
     videoPath: str
-    thumbnailPath: str  # Asegúrate de que esté definido como una cadena de texto
-    viewsCount: int
+    thumbnailPath: Optional[str] = None
     isFavorite: bool
 
     class Config:
-        orm_mode = True
+        orm_mode  = True

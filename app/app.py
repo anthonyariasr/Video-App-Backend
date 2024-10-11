@@ -80,7 +80,7 @@ async def add_video(
     os.makedirs(VIDEO_DIR, exist_ok=True)
     os.makedirs(THUMBNAIL_DIR, exist_ok=True)
 
-    # Crear un timestamp y agregarlo al nombre del archivo para evitar duplicados
+    # Crear un timestamp para evitar duplicados
     timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
     file_extension = file.filename.split(".")[-1]  # Obtener la extensión del archivo
     file_name = f"{file.filename.split('.')[0]}_{timestamp}.{file_extension}"
@@ -91,14 +91,10 @@ async def add_video(
     with open(file_location, "wb") as f:
         f.write(content)
 
-    # Configurar la ruta del thumbnail predeterminado
-    default_thumbnail = os.path.abspath("app/assets/default_thumbnail.png")
-    thumbnail_path = default_thumbnail
+    # Manejo del thumbnail (miniatura)
+    default_thumbnail_path = os.path.abspath("app/assets/default_thumbnail.png")
+    thumbnail_path = default_thumbnail_path if os.path.exists(default_thumbnail_path) else "default_thumbnail.png"
 
-    if not os.path.exists(default_thumbnail):
-        print("Error: El archivo de la miniatura predeterminada no existe en la ruta especificada.")
-
-    # Guardar el archivo de thumbnail si se proporciona
     if thumbnail:
         thumbnail_extension = thumbnail.filename.split(".")[-1]  # Obtener la extensión del thumbnail
         thumbnail_name = f"{thumbnail.filename.split('.')[0]}_{timestamp}.{thumbnail_extension}"
@@ -106,7 +102,12 @@ async def add_video(
         thumbnail_content = await thumbnail.read()
         with open(thumbnail_location, "wb") as f:
             f.write(thumbnail_content)
-        thumbnail_path = thumbnail_location  # Actualizar la ruta si el thumbnail fue cargado correctamente
+        thumbnail_path = thumbnail_location
+
+    # Asegurar que el thumbnailPath siempre sea una cadena válida
+    if not isinstance(thumbnail_path, str) or not thumbnail_path:
+        thumbnail_path = default_thumbnail_path
+
 
     # Crear el nuevo objeto Video y guardarlo en la base de datos
     new_video = Video(
@@ -119,6 +120,7 @@ async def add_video(
     db.add(new_video)
     db.commit()
     db.refresh(new_video)
+    print(f"Ruta final del thumbnail: {thumbnail_path}")
     return new_video
 
 # Agregar un comentario a un video

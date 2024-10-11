@@ -80,9 +80,11 @@
     <!-- Indicador de carga -->
     <div id="loading-indicator" class="hidden p-6 text-center">
         <p class="text-lg font-semibold">Cargando el video... Por favor espera.</p>
-        <div class="loader"></div> <!-- Loader animado (CSS) -->
+        <div class="loader"></div> <!-- Loader animado (círculo giratorio) -->
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div> <!-- Barra de progreso lineal -->
+        </div>
     </div>
-
     <!-- Mensaje de error -->
     <div id="error-message" class="hidden p-6 text-center text-red-600">
         <p>Error al cargar el video. Por favor revisa los campos e inténtalo de nuevo.</p>
