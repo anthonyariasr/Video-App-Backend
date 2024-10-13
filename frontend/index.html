@@ -43,19 +43,19 @@
         <form id="add-video-form">
             <div class="mb-6">
                 <label for="video-file" class="block text-lg font-semibold mb-2">Selecciona un archivo de video (.mp4, max 10MB)</label>
-                <input type="file" id="video-file" class="input-field" accept=".mp4" required>
+                <input type="file" id="add-video-file" class="input-field" accept=".mp4" required>
             </div>
             <div class="mb-6">
-                <label for="video-title" class="block text-lg font-semibold mb-2">Título del Video</label>
-                <input type="text" id="video-title" placeholder="Ingresa el título del video" class="input-field" maxlength="100" required>
+                <label for="add-video-title" class="block text-lg font-semibold mb-2">Título del Video</label>
+                <input type="text" id="add-video-title" placeholder="Ingresa el título del video" class="input-field" maxlength="100" required>
             </div>
             <div class="mb-6">
-                <label for="video-description" class="block text-lg font-semibold mb-2">Descripción (opcional, max 300 caracteres)</label>
-                <textarea id="video-description" placeholder="Ingresa una descripción" class="input-field" maxlength="300"></textarea>
+                <label for="add-video-description" class="block text-lg font-semibold mb-2">Descripción (opcional, max 300 caracteres)</label>
+                <textarea id="add-video-description" placeholder="Ingresa una descripción" class="input-field" maxlength="300"></textarea>
             </div>
             <div class="mb-6">
                 <label for="thumbnail-file" class="block text-lg font-semibold mb-2">Selecciona un thumbnail (max 2MB)</label>
-                <input type="file" id="thumbnail-file" class="input-field" accept=".jpg, .jpeg, .png">
+                <input type="file" id="add-thumbnail-file" class="input-field" accept=".jpg, .jpeg, .png">
             </div>
             <button type="submit" class="button-primary px-4 py-2 rounded-md">Subir Video</button>
         </form>

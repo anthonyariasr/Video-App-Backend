@@ -370,10 +370,10 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
     errorMessage.classList.add("hidden");
     successMessage.classList.add("hidden");
 
-    const title = document.getElementById("video-title").value;
-    const description = document.getElementById("video-description").value;
-    const fileInput = document.getElementById("video-file");
-    const thumbnailInput = document.getElementById("thumbnail-file");
+    const title = document.getElementById("add-video-title").value;  // Actualizado
+    const description = document.getElementById("add-video-description").value;  // Actualizado
+    const fileInput = document.getElementById("add-video-file");  // Actualizado
+    const thumbnailInput = document.getElementById("add-thumbnail-file");  // Actualizado
 
     const videoFile = fileInput.files[0];
     if (!videoFile) {
@@ -413,10 +413,6 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
     }
 });
 
-returnHomeButton.addEventListener("click", () => {
-    successMessage.classList.add("hidden");
-    showSection(homeSection);
-});
 
 window.onload = function() {
     loadTopVideos();
