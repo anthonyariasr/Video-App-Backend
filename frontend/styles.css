@@ -118,48 +118,36 @@ label {
     margin-top: 10px;
 }
 
-/* Loader animado */
+/* Estilos para el indicador de carga */
 .loader {
-    display: inline-block;
-    width: 80px;
-    height: 80px;
-    border: 8px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: #3498db; /* Color principal de la animación */
-    animation: spin 1s ease-in-out infinite;
-    margin: 0 auto;
+    border: 16px solid #f3f3f3; /* Color del borde exterior */
+    border-top: 16px solid #3498db; /* Color del borde superior (para crear el efecto de carga) */
+    border-radius: 50%; /* Círculo */
+    width: 120px;
+    height: 120px;
+    animation: spin 12s linear infinite; /* Hacemos que el círculo tarde 12 segundos en girar */
+    margin: 20px auto;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* Barra de progreso lineal */
 .progress-bar-container {
     width: 100%;
-    background-color: #2c2c2c;
-    border-radius: 5px;
-    margin-top: 20px;
-    overflow: hidden;
+    background-color: #ccc;
+    margin-top: 10px;
 }
 
 .progress-bar {
-    height: 8px;
     width: 0;
-    background-color: #3498db;
-    animation: progress 3s linear infinite;
+    height: 10px;
+    background-color: #4caf50; /* Color de la barra de progreso */
+    animation: load 30s linear forwards; /* Hacemos que la barra de progreso tarde 30 segundos en completarse */
 }
 
-@keyframes progress {
-    0% {
-        width: 0;
-    }
-    50% {
-        width: 75%;
-    }
-    100% {
-        width: 100%;
-    }
+@keyframes load {
+    from { width: 0; }
+    to { width: 100%; }
 }

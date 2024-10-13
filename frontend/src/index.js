@@ -168,6 +168,7 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
     }
 });
 
+
 // Manejo del botón de éxito para volver a la página de inicio
 returnHomeButton.addEventListener("click", () => {
     successMessage.classList.add("hidden");
