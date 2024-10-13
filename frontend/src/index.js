@@ -11,6 +11,8 @@ const errorMessage = document.getElementById("error-message");
 const successMessage = document.getElementById("success-message");
 const returnHomeButton = document.getElementById("return-home");
 
+const PORT = 8000
+
 // Función para mostrar una sección
 function showSection(section) {
     homeSection.classList.add("hidden");
@@ -26,10 +28,35 @@ navAddVideo.addEventListener("click", () => showSection(addVideoSection));
 // Función para cargar los videos más vistos
 async function loadTopVideos() {
     try {
-        const response = await fetch("http://localhost:8000/videos/top");
+        const response = await fetch(`http://localhost:${PORT}/videos/top`);
         const videos = await response.json();
 
         const videoList = document.getElementById("top-videos-list");
+        videoList.innerHTML = ""; // Limpiar la lista antes de añadir nuevos videos
+
+        videos.forEach(video => {
+            const videoCard = `
+                <div class="flex flex-col bg-gray-800 p-6 rounded-xl cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
+                    <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
+                    <h3 class="text-lg font-bold">${video.title}</h3>
+                    <p>${video.viewsCount ? video.viewsCount : 0} vistas</p>
+                </div>
+            `;
+            videoList.innerHTML += videoCard;
+        });
+    } catch (error) {
+        console.error("Error al cargar los videos más vistos:", error);
+    }
+}
+
+
+// Función para cargar los videos favoritos más vistos
+async function loadTopFavoriteVideos() {
+    try {
+        const response = await fetch(`http://localhost:${PORT}/videos/favorites`);
+        const videos = await response.json();
+
+        const videoList = document.getElementById("favorite-videos-list");
         videoList.innerHTML = ""; // Limpiar la lista antes de añadir nuevos videos
 
         videos.forEach(video => {
@@ -54,9 +81,10 @@ function displaySearchResults(videos) {
 
     videos.forEach(video => {
         const videoCard = `
-            <div class="bg-zinc-700 p-4 rounded video-card" onclick="playVideo(${video.id})">
+            <div class="flex flex-col bg-gray-800 p-6 rounded-xl cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
+                <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
                 <h3 class="text-lg font-bold">${video.title}</h3>
-                <p>${video.viewsCount || '0'} vistas</p>
+                <p>${video.viewsCount ? video.viewsCount : 0} vistas</p>
             </div>
         `;
         searchResultsList.innerHTML += videoCard;
@@ -70,7 +98,7 @@ function displaySearchResults(videos) {
 document.getElementById("search-button").addEventListener("click", () => {
     const query = document.getElementById("search-bar").value;
     if (query) {
-        fetch(`http://localhost:8000/videos/search?query=${query}`)
+        fetch(`http://localhost:${PORT}/videos/search?query=${query}`)
             .then(response => response.json())
             .then(videos => {
                 displaySearchResults(videos);
@@ -149,4 +177,5 @@ returnHomeButton.addEventListener("click", () => {
 // Cargar videos al iniciar la página
 window.onload = function() {
     loadTopVideos();
+    loadTopFavoriteVideos();
 };
