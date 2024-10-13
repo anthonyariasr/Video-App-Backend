@@ -99,7 +99,7 @@ function toggleFavorite(video) {
     const newFavoriteState = !isFavorite;
 
     fetch(`http://localhost:${PORT}/videos/${video.id}/favorite`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -171,7 +171,7 @@ function playVideo(videoId) {
 // Función para agregar el video a favoritos
 function addToFavorites(video) {
     fetch(`http://localhost:${PORT}/videos/${video.id}/favorite`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         }
