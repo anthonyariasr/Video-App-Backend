@@ -136,7 +136,7 @@ function playVideo(videoId) {
 
             // Manejo del evento click para el botón de favoritos
             favoriteButton.onclick = () => toggleFavorite(video);
-        })
+
            /* // Llamada para aumentar las reproducciones
             fetch(`http://localhost:${PORT}/videos/${videoId}/views`, {
                 method: 'PUT',
@@ -153,7 +153,7 @@ function playVideo(videoId) {
             .catch(error => {
                 console.error("Error al aumentar las reproducciones:", error);
             });*/
-
+            })
             .catch(error => {
                 console.error("Error al cargar el video:", error);
             });
