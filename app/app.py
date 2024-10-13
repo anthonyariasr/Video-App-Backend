@@ -92,8 +92,8 @@ async def add_video(
         f.write(content)
 
     # Manejo del thumbnail (miniatura)
-    default_thumbnail_path = os.path.abspath("app/assets/default_thumbnail.png")
-    thumbnail_path = default_thumbnail_path if os.path.exists(default_thumbnail_path) else "default_thumbnail.png"
+    default_thumbnail_path = "default_thumbnail.png"  # Solo el nombre del archivo por defecto
+    thumbnail_path = default_thumbnail_path
 
     if thumbnail:
         thumbnail_extension = thumbnail.filename.split(".")[-1]  # Obtener la extensión del thumbnail
@@ -102,25 +102,20 @@ async def add_video(
         thumbnail_content = await thumbnail.read()
         with open(thumbnail_location, "wb") as f:
             f.write(thumbnail_content)
-        thumbnail_path = thumbnail_location
-
-    # Asegurar que el thumbnailPath siempre sea una cadena válida
-    if not isinstance(thumbnail_path, str) or not thumbnail_path:
-        thumbnail_path = default_thumbnail_path
-
+        thumbnail_path = thumbnail_name  # Solo guardar el nombre del archivo
 
     # Crear el nuevo objeto Video y guardarlo en la base de datos
     new_video = Video(
         title=title,
         description=description,
-        videoPath=file_location,
-        thumbnailPath=thumbnail_path,
+        videoPath=file_name,  # Solo guardar el nombre del archivo de video
+        thumbnailPath=thumbnail_path,  # Solo guardar el nombre del archivo de thumbnail
         creationDate=datetime.utcnow()
     )
     db.add(new_video)
     db.commit()
     db.refresh(new_video)
-    print(f"Ruta final del thumbnail: {thumbnail_path}")
+
     return new_video
 
 # Agregar un comentario a un video

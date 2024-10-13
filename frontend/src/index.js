@@ -34,9 +34,10 @@ async function loadTopVideos() {
 
         videos.forEach(video => {
             const videoCard = `
-                <div class="bg-zinc-700 p-4 rounded video-card" onclick="playVideo(${video.id})">
+                <div class="flex flex-col bg-gray-800 p-6 rounded-xl cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
+                    <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
                     <h3 class="text-lg font-bold">${video.title}</h3>
-                    <p>${video.viewsCount} vistas</p>
+                    <p>${video.viewsCount ? video.viewsCount : 0} vistas</p>
                 </div>
             `;
             videoList.innerHTML += videoCard;
