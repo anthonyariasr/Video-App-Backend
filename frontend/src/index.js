@@ -95,35 +95,18 @@ function formatDate(dateString) {
 
 // Función para manejar el clic en el botón de favoritos
 function toggleFavorite(video) {
-    const isFavorite = video.isFavorite;
-    const newFavoriteState = !isFavorite;
-
-    fetch(`http://localhost:${PORT}/videos/${video.id}/favorite`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ isFavorite: newFavoriteState }),
-    })
-    .then(response => response.json())
-    .then(updatedVideo => {
-        video.isFavorite = updatedVideo.isFavorite;
-
-        if (updatedVideo.isFavorite) {
-            favoriteButton.textContent = 'Quitar de Favoritos';
-        } else {
-            favoriteButton.textContent = 'Agregar a Favoritos';
-        }
-    })
-    .catch(error => console.error('Error al actualizar favoritos:', error));
+    if (video.isFavorite) {
+        removeFromFavorites(video); 
+    } else {
+        addToFavorites(video);  
+    }
 }
 
-// Función para reproducir un video seleccionado
-function playVideo(videoId) { 
+
+function playVideo(videoId) {
     fetch(`http://localhost:${PORT}/videos/${videoId}`)
         .then(response => response.json())
         .then(video => {
-            // Cargar y reproducir el video
             videoSource.src = `/app/videos/${video.videoPath}`;
             videoPlayer.load();
 
@@ -144,6 +127,16 @@ function playVideo(videoId) {
             showSection(videoPlayerSection);
             loadComments(videoId);
 
+            // Actualiza el estado del botón de favoritos
+            if (video.isFavorite) {
+                favoriteButton.textContent = 'Quitar de Favoritos';
+            } else {
+                favoriteButton.textContent = 'Agregar a Favoritos';
+            }
+
+            // Manejo del evento click para el botón de favoritos
+            favoriteButton.onclick = () => toggleFavorite(video);
+        })
            /* // Llamada para aumentar las reproducciones
             fetch(`http://localhost:${PORT}/videos/${videoId}/views`, {
                 method: 'PUT',
@@ -161,17 +154,15 @@ function playVideo(videoId) {
                 console.error("Error al aumentar las reproducciones:", error);
             });*/
 
-        })
-        .catch(error => {
-            console.error("Error al cargar el video:", error);
-        });
-}
-
+            .catch(error => {
+                console.error("Error al cargar el video:", error);
+            });
+    }
 
 // Función para agregar el video a favoritos
 function addToFavorites(video) {
     fetch(`http://localhost:${PORT}/videos/${video.id}/favorite`, {
-        method: 'PUT',
+        method: 'PATCH',  // Cambiado a PATCH para agregar a favoritos
         headers: {
             'Content-Type': 'application/json',
         }
@@ -180,6 +171,7 @@ function addToFavorites(video) {
     .then(updatedVideo => {
         video.isFavorite = updatedVideo.isFavorite;
         favoriteButton.textContent = 'Quitar de Favoritos';
+        loadTopFavoriteVideos();  // Recargar la lista de videos favoritos
     })
     .catch(error => console.error('Error al agregar a favoritos:', error));
 }
@@ -187,7 +179,7 @@ function addToFavorites(video) {
 // Función para quitar el video de favoritos
 function removeFromFavorites(video) {
     fetch(`http://localhost:${PORT}/videos/${video.id}/favorite`, {
-        method: 'DELETE',
+        method: 'DELETE',  // DELETE para eliminar de favoritos
         headers: {
             'Content-Type': 'application/json',
         }
@@ -196,17 +188,9 @@ function removeFromFavorites(video) {
     .then(updatedVideo => {
         video.isFavorite = updatedVideo.isFavorite;
         favoriteButton.textContent = 'Agregar a Favoritos';
+        loadTopFavoriteVideos();  // Recargar la lista de videos favoritos
     })
     .catch(error => console.error('Error al quitar de favoritos:', error));
-}
-
-// Función para manejar el clic en el botón de favoritos
-function toggleFavorite(video) {
-    if (video.isFavorite) {
-        removeFromFavorites(video);
-    } else {
-        addToFavorites(video);
-    }
 }
 
 function displaySearchResults(videos) {

@@ -127,7 +127,7 @@ def increment_views(video_id: int, db: Session = Depends(get_db)):
     return {"status": "views incremented"}
 
 # Agregar un video a los favoritos
-@app.put("/videos/{video_id}/favorite")
+@app.patch("/videos/{video_id}/favorite")
 def add_to_favorites(video_id: int, db: Session = Depends(get_db)):
     favorite_video = FavoriteVideo(
         videoID=video_id,
@@ -139,7 +139,8 @@ def add_to_favorites(video_id: int, db: Session = Depends(get_db)):
         video.isFavorite = True
         db.commit()
         db.refresh(video)
-    return video
+    return video 
+
 
 # Quitar un video de los favoritos
 @app.delete("/videos/{video_id}/favorite")
@@ -153,3 +154,4 @@ def remove_from_favorites(video_id: int, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(video)
     return video
+
