@@ -162,7 +162,7 @@ label {
 
 /* Estilos para la sección del reproductor de video */
 #video-player-section {
-    max-width: 900px; /* Máximo ancho para el contenedor del video */
+    max-width: 1200px; /* Máximo ancho para el contenedor del video */
     margin: 20px auto; /* Centrar la sección */
     background-color: #1a1a1a; /* Fondo oscuro */
     padding: 20px;
@@ -172,7 +172,14 @@ label {
 
 /* Contenedor del video */
 #video-container {
-    text-align: center; /* Centrar el contenido */
+    text-align: left;
+
+}
+
+/* Ajustes para mejorar la separación de los detalles del video */
+#video-container h2,
+#video-container p {
+    margin: 5px 0; /* Margen uniforme entre los elementos */
 }
 
 /* Estilos para el reproductor de video */
@@ -187,16 +194,14 @@ label {
 /* Estilo para el título del video */
 #video-title {
     font-size: 1.8rem;
-    color: #ffffff;
+    color: #000000;
     margin-top: 10px;
+    display: block; /* Asegurarte de que el título esté visible */
 }
 
-/* Estilo para la descripción del video */
 #video-description {
-    font-size: 1rem;
-    color: #cccccc;
-    margin-top: 8px;
-    line-height: 1.5;
+    color: #000000; /* Cambiar temporalmente a rojo brillante */
+    padding: 5px; /* Añadir un poco de padding */
 }
 
 /* Estilo para el contador de reproducciones */
@@ -204,7 +209,17 @@ label {
     font-size: 0.9rem;
     color: #999999;
     margin-top: 5px;
+    display: block; /* Asegurarte de que las vistas estén visibles */
 }
+
+/* Estilo para la fecha del video */
+#video-date {
+    font-size: 0.9rem;
+    color: #999999;
+    margin-top: 5px;
+    display: block; /* Asegurarte de que la fecha esté visible */
+}
+
 
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {

@@ -131,6 +131,7 @@ def add_comment(video_id: int, comment_data: CommentCreate, db: Session = Depend
     db.refresh(new_comment)
     return new_comment
 
+
 """ PATCH Methods """
 
 # Incrementar la cantidad de reproducciones de un video
@@ -156,9 +157,7 @@ def add_to_favorites(video_id: int, db: Session = Depends(get_db)):
         video.isFavorite = True
         db.commit()
         db.refresh(video)
-    return {"status": "video added to favorites"}
-
-""" DELETE Methods """
+    return video  # Devolver el video actualizado
 
 # Quitar un video de los favoritos
 @app.delete("/videos/{video_id}/favorite")
@@ -170,4 +169,5 @@ def remove_from_favorites(video_id: int, db: Session = Depends(get_db)):
         if video:
             video.isFavorite = False
         db.commit()
-    return {"status": "video removed from favorites"}
+        db.refresh(video)
+    return video  # Devolver el video actualizado
