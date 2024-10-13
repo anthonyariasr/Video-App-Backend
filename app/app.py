@@ -117,7 +117,7 @@ def add_comment(video_id: int, comment_data: CommentCreate, db: Session = Depend
     return new_comment
 
 # Incrementar la cantidad de reproducciones de un video
-@app.put("/videos/{video_id}/views")
+@app.patch("/videos/{video_id}/views")
 def increment_views(video_id: int, db: Session = Depends(get_db)):
     video = db.query(Video).filter(Video.id == video_id).first()
     if video:
