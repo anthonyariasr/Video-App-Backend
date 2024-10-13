@@ -13,13 +13,24 @@ const returnHomeButton = document.getElementById("return-home");
 
 const PORT = 8000
 
+const videoPlayerSection = document.getElementById("video-player-section");
+const videoPlayer = document.getElementById("video-player");
+const videoSource = document.getElementById("video-source");
+const videoTitle = document.getElementById("video-title");
+const videoDescription = document.getElementById("video-description");
+const videoViews = document.getElementById("video-views");
+
 // Función para mostrar una sección
+// Función para mostrar una sección (se actualiza para ocultar también el reproductor)
 function showSection(section) {
     homeSection.classList.add("hidden");
     addVideoSection.classList.add("hidden");
     searchResultsSection.classList.add("hidden");
+    videoPlayerSection.classList.add("hidden"); // Ocultar la sección del reproductor al cambiar
+
     section.classList.remove("hidden");
 }
+
 
 // Navegar entre secciones
 navHome.addEventListener("click", () => showSection(homeSection));
@@ -74,6 +85,14 @@ async function loadTopFavoriteVideos() {
     }
 }
 
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    if (isNaN(date)) {
+        return "Fecha no disponible";
+    }
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+}
+
 // Función para mostrar los resultados de búsqueda
 function displaySearchResults(videos) {
     const searchResultsList = document.getElementById("search-results-list");
@@ -81,10 +100,17 @@ function displaySearchResults(videos) {
 
     videos.forEach(video => {
         const videoCard = `
-            <div class="flex flex-col bg-gray-800 p-6 rounded-xl cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
-                <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
-                <h3 class="text-lg font-bold">${video.title}</h3>
-                <p>${video.viewsCount ? video.viewsCount : 0} vistas</p>
+            <div class="flex flex-col md:flex-row bg-gray-800 p-4 rounded-xl mb-4 shadow-lg cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
+                <img class="w-full md:w-48 rounded-lg mb-4 md:mb-0" src="/app/assets/thumbnails/${video.thumbnailPath}" alt="${video.title} Thumbnail">
+                <div class="flex-1 md:ml-6">
+                    <h3 class="text-lg font-bold text-accent">${video.title}</h3>
+                    <p class="text-sm text-gray-400">${video.description ? video.description.slice(0, 100) : 'No description available...'}...</p>
+                    <div class="mt-2 text-sm text-gray-500">
+                        <p>Fecha de creación: ${formatDate(video.creationDate)}</p>
+                        <p>Reproducciones: ${video.viewsCount ? video.viewsCount : 0}</p>
+                        <p>Favorito: ${video.isFavorite ? 'Sí' : 'No'}</p>
+                    </div>
+                </div>
             </div>
         `;
         searchResultsList.innerHTML += videoCard;
@@ -101,7 +127,7 @@ document.getElementById("search-button").addEventListener("click", () => {
         fetch(`http://localhost:${PORT}/videos/search?query=${query}`)
             .then(response => response.json())
             .then(videos => {
-                displaySearchResults(videos);
+                displaySearchResults(videos);  // Mostrar los resultados con la función actualizada
             })
             .catch(error => {
                 console.error("Error al buscar videos:", error);
@@ -111,8 +137,22 @@ document.getElementById("search-button").addEventListener("click", () => {
 
 // Función para reproducir un video seleccionado
 function playVideo(videoId) {
-    console.log(`Reproduciendo video con ID: ${videoId}`);
-    // Aquí puedes agregar la lógica para redirigir a la página de reproducción del video
+    fetch(`http://localhost:${PORT}/videos/${videoId}`)
+        .then(response => response.json())
+        .then(video => {
+            // Actualizar los detalles del video
+            videoSource.src = `/app/videos/${video.videoPath}`; // Ruta al video
+            videoPlayer.load(); // Cargar el nuevo video en el reproductor
+            videoTitle.textContent = video.title;
+            videoDescription.textContent = video.description || "Sin descripción disponible.";
+            videoViews.textContent = `Reproducciones: ${video.viewsCount || 0}`;
+
+            // Mostrar la sección del reproductor de video
+            showSection(videoPlayerSection);
+        })
+        .catch(error => {
+            console.error("Error al cargar el video:", error);
+        });
 }
 
 // Evento para manejar la subida del video
@@ -134,7 +174,7 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
     if (!videoFile) {
         loadingIndicator.classList.add("hidden");
         errorMessage.classList.remove("hidden");
-        errorMessage.textContent = "Por favor, selecciona un archivo de video.";
+        errorMessage.textContent = "Por favor, selecciona un archivo de video."; // Mensaje de error
         return;
     }
 
@@ -155,8 +195,10 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
         loadingIndicator.classList.add("hidden");
 
         if (response.ok) {
+            // Mostrar mensaje de éxito
             successMessage.classList.remove("hidden");
         } else {
+            // Mostrar mensaje de error en caso de fallo en la carga
             errorMessage.classList.remove("hidden");
             errorMessage.textContent = "Error al subir el video. Inténtalo de nuevo.";
         }
@@ -168,11 +210,10 @@ document.getElementById("add-video-form").addEventListener("submit", async (e) =
     }
 });
 
-
 // Manejo del botón de éxito para volver a la página de inicio
 returnHomeButton.addEventListener("click", () => {
-    successMessage.classList.add("hidden");
-    showSection(homeSection);
+    successMessage.classList.add("hidden"); // Ocultar mensaje de éxito
+    showSection(homeSection); // Regresar a la página de inicio
 });
 
 // Cargar videos al iniciar la página

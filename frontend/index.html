@@ -82,6 +82,20 @@
         <button id="return-home" class="button-primary mt-4 px-4 py-2 rounded-md">Volver a la página de inicio</button>
     </div>
 
+    <!-- Sección para mostrar el video seleccionado -->
+    <section id="video-player-section" class="hidden p-6 bg-gray-700">
+        <div id="video-container">
+            <!-- Aquí se cargará el video -->
+            <video id="video-player" controls width="100%" height="auto">
+                <source id="video-source" src="" type="video/mp4">
+                Tu navegador no soporta la reproducción de videos.
+            </video>
+            <h2 id="video-title" class="text-2xl font-bold mt-4"></h2>
+            <p id="video-description" class="mt-2"></p>
+            <p id="video-views" class="mt-2"></p>
+        </div>
+    </section>
+
     <script src="src/index.js"></script>
 </body>
 </html>
