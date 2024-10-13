@@ -124,7 +124,7 @@ def increment_views(video_id: int, db: Session = Depends(get_db)):
         video.viewsCount += 1
         db.commit()
         db.refresh(video)
-    return {"status": "views incremented"}
+    return {"status": "views incremented", "updatedViewsCount": video.viewsCount}
 
 # Agregar un video a los favoritos
 @app.patch("/videos/{video_id}/favorite")

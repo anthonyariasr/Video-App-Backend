@@ -45,20 +45,29 @@ async function loadTopVideos() {
         videoList.innerHTML = "";
 
         videos.forEach(video => {
-            const videoCard = `
-                <div class="flex flex-col bg-gray-800 p-6 rounded-xl cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
-                    <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
-                    <h3 class="text-lg font-bold">${video.title}</h3>
-                    <p>${video.viewsCount ? video.viewsCount : 0} vistas</p>
-                    <p>${video.creationDate}</p>
-                </div>
+            // Crear el contenedor de video dinámicamente sin el onclick en el HTML
+            const videoCard = document.createElement('div');
+            videoCard.classList.add('flex', 'flex-col', 'bg-gray-800', 'p-6', 'rounded-xl', 'cursor-pointer', 'hover:bg-gray-900');
+            videoCard.innerHTML = `
+                <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
+                <h3 class="text-lg font-bold mt-2">${video.title}</h3>
+                <p>${video.viewsCount ? video.viewsCount : 0} vistas</p>
+                <p>${video.creationDate}</p>
             `;
-            videoList.innerHTML += videoCard;
+
+            // Agregar un EventListener para manejar el clic en cada tarjeta de video
+            videoCard.addEventListener('click', function() {
+                playVideo(video.id);  // Llamar a la función playVideo con el videoId
+            });
+
+            // Añadir la tarjeta al contenedor de videos
+            videoList.appendChild(videoCard);
         });
     } catch (error) {
         console.error("Error al cargar los videos más vistos:", error);
     }
 }
+
 
 // Función para cargar los videos favoritos más vistos
 async function loadTopFavoriteVideos() {
@@ -73,7 +82,7 @@ async function loadTopFavoriteVideos() {
             const videoCard = `
                 <div class="flex flex-col bg-gray-800 p-6 rounded-xl cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
                     <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
-                    <h3 class="text-lg font-bold">${video.title}</h3>
+                    <h3 class="text-lg font-bold mt-2">${video.title}</h3>
                     <p>${video.viewsCount ? video.viewsCount : 0} vistas</p>
                     <p>${video.creationDate}</p>
                 </div>
@@ -137,22 +146,26 @@ function playVideo(videoId) {
             // Manejo del evento click para el botón de favoritos
             favoriteButton.onclick = () => toggleFavorite(video);
 
-           // Llamada para aumentar las reproducciones
-            fetch(`http://localhost:${PORT}/videos/${videoId}/views`, {
+            // Llamada para aumentar las reproducciones
+            /*fetch(`http://localhost:${PORT}/videos/${videoId}/views`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 }
             })
-            .then(viewsResponse => viewsResponse.json())
+            .then(viewsResponse => {
+                console.log("Estado de la respuesta:", viewsResponse.status);
+                return viewsResponse.json();
+            })
             .then(viewsData => {
-                console.log("La cantidad de reproducciones ha aumentado.");
-                // Opcional: Actualizar el contador de reproducciones en la interfaz
+                console.log("Datos devueltos por el servidor:", viewsData);
                 videoViews.textContent = `Reproducciones: ${viewsData.updatedViewsCount || video.viewsCount + 1}`;
             })
             .catch(error => {
                 console.error("Error al aumentar las reproducciones:", error);
-            });
+            });*/
+
+            
             })
             .catch(error => {
                 console.error("Error al cargar el video:", error);
@@ -207,7 +220,7 @@ function displaySearchResults(videos) {
         const videoCard = `
             <div class="flex flex-col bg-gray-800 p-6 rounded-xl cursor-pointer hover:bg-gray-900" onclick="playVideo(${video.id})">
                 <img style="width:200px" src="/app/assets/thumbnails/${video.thumbnailPath}">
-                <h3 class="text-lg font-bold">${video.title}</h3>
+                <h3 class="text-lg font-bold mt-2">${video.title}</h3>
                 <p>${video.viewsCount || 0} vistas</p>
                 <p>${video.creationDate}</p>
             </div>
