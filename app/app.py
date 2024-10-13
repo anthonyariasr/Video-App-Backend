@@ -1,16 +1,11 @@
 import os
 from datetime import datetime
-# FastAPI
 from fastapi import FastAPI, Depends, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
-# SQLAlchemy
 from sqlalchemy.orm import Session
-from app.database import engine, get_db
-from app.database import Base
-# Models and Schemas
+from app.database import engine, get_db, Base
 from app.models import Video, Comment, FavoriteVideo
 from app.schemas import VideoCreate, VideoResponse, CommentResponse, CommentCreate
-
 from typing import Optional, List
 
 # Crear todas las tablas
@@ -21,19 +16,15 @@ app = FastAPI()
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"],  # Permite solicitudes del puerto 5500
+    allow_origins=["http://127.0.0.1:5500"],
     allow_credentials=True,
-    allow_methods=["*"],  # Permite todos los métodos (GET, POST, PATCH, DELETE, etc.)
-    allow_headers=["*"],  # Permite todos los headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/")
 def is_running():
-    return {
-        "status": "running"
-    }
-
-""" GET Methods """
+    return {"status": "running"}
 
 # Retornar los 10 videos más vistos
 @app.get("/videos/top", response_model=List[VideoResponse])
@@ -65,14 +56,12 @@ def get_video_comments(video_id: int, db: Session = Depends(get_db)):
     comments = db.query(Comment).filter(Comment.videoID == video_id).all()
     return comments
 
-""" POST Methods """
-
 @app.post("/videos", response_model=VideoResponse)
 async def add_video(
     title: str = Form(...),
     description: Optional[str] = Form(None),
     file: UploadFile = File(...),
-    thumbnail: Optional[UploadFile] = File(None),  # Thumbnail opcional
+    thumbnail: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
     VIDEO_DIR = "app/videos"
@@ -80,36 +69,32 @@ async def add_video(
     os.makedirs(VIDEO_DIR, exist_ok=True)
     os.makedirs(THUMBNAIL_DIR, exist_ok=True)
 
-    # Crear un timestamp para evitar duplicados
     timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-    file_extension = file.filename.split(".")[-1]  # Obtener la extensión del archivo
+    file_extension = file.filename.split(".")[-1]
     file_name = f"{file.filename.split('.')[0]}_{timestamp}.{file_extension}"
 
-    # Guardar el archivo de video con el nuevo nombre
     file_location = os.path.join(VIDEO_DIR, file_name)
     content = await file.read()
     with open(file_location, "wb") as f:
         f.write(content)
 
-    # Manejo del thumbnail (miniatura)
-    default_thumbnail_path = "default_thumbnail.png"  # Solo el nombre del archivo por defecto
+    default_thumbnail_path = "default_thumbnail.png"
     thumbnail_path = default_thumbnail_path
 
     if thumbnail:
-        thumbnail_extension = thumbnail.filename.split(".")[-1]  # Obtener la extensión del thumbnail
+        thumbnail_extension = thumbnail.filename.split(".")[-1]
         thumbnail_name = f"{thumbnail.filename.split('.')[0]}_{timestamp}.{thumbnail_extension}"
         thumbnail_location = os.path.join(THUMBNAIL_DIR, thumbnail_name)
         thumbnail_content = await thumbnail.read()
         with open(thumbnail_location, "wb") as f:
             f.write(thumbnail_content)
-        thumbnail_path = thumbnail_name  # Solo guardar el nombre del archivo
+        thumbnail_path = thumbnail_name
 
-    # Crear el nuevo objeto Video y guardarlo en la base de datos
     new_video = Video(
         title=title,
         description=description,
-        videoPath=file_name,  # Solo guardar el nombre del archivo de video
-        thumbnailPath=thumbnail_path,  # Solo guardar el nombre del archivo de thumbnail
+        videoPath=file_name,
+        thumbnailPath=thumbnail_path,
         creationDate=datetime.utcnow()
     )
     db.add(new_video)
@@ -130,9 +115,6 @@ def add_comment(video_id: int, comment_data: CommentCreate, db: Session = Depend
     db.commit()
     db.refresh(new_comment)
     return new_comment
-
-
-""" PATCH Methods """
 
 # Incrementar la cantidad de reproducciones de un video
 @app.patch("/videos/{video_id}/views")
@@ -157,7 +139,7 @@ def add_to_favorites(video_id: int, db: Session = Depends(get_db)):
         video.isFavorite = True
         db.commit()
         db.refresh(video)
-    return video  # Devolver el video actualizado
+    return video
 
 # Quitar un video de los favoritos
 @app.delete("/videos/{video_id}/favorite")
@@ -170,4 +152,4 @@ def remove_from_favorites(video_id: int, db: Session = Depends(get_db)):
             video.isFavorite = False
         db.commit()
         db.refresh(video)
-    return video  # Devolver el video actualizado
+    return video

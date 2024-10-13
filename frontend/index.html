@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video App</title>
-    <link rel="stylesheet" href="output.css"> <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="styles.css"> <!-- Nuevo archivo CSS -->
+    <link rel="stylesheet" href="output.css"> 
+    <link rel="stylesheet" href="styles.css"> 
 </head>
 <body class="bg-gray-800 text-white">
 
@@ -64,9 +64,9 @@
     <!-- Indicador de carga -->
     <div id="loading-indicator" class="hidden p-6 text-center">
         <p class="text-lg font-semibold">Cargando el video... Por favor espera.</p>
-        <div class="loader"></div> <!-- Loader animado (círculo giratorio) -->
+        <div class="loader"></div> 
         <div class="progress-bar-container">
-            <div class="progress-bar"></div> <!-- Barra de progreso lineal -->
+            <div class="progress-bar"></div> 
         </div>
     </div>
 
@@ -100,12 +100,13 @@
         <section id="comments-section" class="mt-8">
             <h3 class="text-xl font-bold">Comentarios</h3>
             <div id="comments-list" class="mt-4">
-                <!-- Aquí se agregarán dinámicamente los comentarios -->
+                <!-- Aqui se agregaran los comentarios -->
             </div>
         
             <!-- Formulario para agregar un nuevo comentario -->
             <form id="add-comment-form" class="mt-6">
                 <textarea id="comment-text" maxlength="100" class="input-field w-full p-2 mb-4" placeholder="Escribe tu comentario (máx. 100 caracteres)"></textarea>
+                <input type="hidden" id="video-id" value="">
                 <button type="submit" class="button-primary px-4 py-2 rounded-md">Agregar Comentario</button>
             </form>
             
