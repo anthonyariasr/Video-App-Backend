@@ -117,7 +117,7 @@ def add_comment(video_id: int, comment_data: CommentCreate, db: Session = Depend
     return new_comment
 
 # Incrementar la cantidad de reproducciones de un video
-@app.patch("/videos/{video_id}/views")
+@app.put("/videos/{video_id}/views")
 def increment_views(video_id: int, db: Session = Depends(get_db)):
     video = db.query(Video).filter(Video.id == video_id).first()
     if video:
@@ -127,7 +127,7 @@ def increment_views(video_id: int, db: Session = Depends(get_db)):
     return {"status": "views incremented"}
 
 # Agregar un video a los favoritos
-@app.patch("/videos/{video_id}/favorite")
+@app.put("/videos/{video_id}/favorite")
 def add_to_favorites(video_id: int, db: Session = Depends(get_db)):
     favorite_video = FavoriteVideo(
         videoID=video_id,

@@ -3,7 +3,8 @@
 
 *.db
 
-/videos
+/app/videos
+/app/assets/thumbnails/
 
 ### Node ###
 # Logs

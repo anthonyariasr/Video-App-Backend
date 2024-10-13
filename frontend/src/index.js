@@ -119,10 +119,11 @@ function toggleFavorite(video) {
 }
 
 // Función para reproducir un video seleccionado
-function playVideo(videoId) {
+function playVideo(videoId) { 
     fetch(`http://localhost:${PORT}/videos/${videoId}`)
         .then(response => response.json())
         .then(video => {
+            // Cargar y reproducir el video
             videoSource.src = `/app/videos/${video.videoPath}`;
             videoPlayer.load();
 
@@ -142,11 +143,30 @@ function playVideo(videoId) {
             currentVideoId = videoId;
             showSection(videoPlayerSection);
             loadComments(videoId);
+
+           /* // Llamada para aumentar las reproducciones
+            fetch(`http://localhost:${PORT}/videos/${videoId}/views`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(viewsResponse => viewsResponse.json())
+            .then(viewsData => {
+                console.log("La cantidad de reproducciones ha aumentado.");
+                // Opcional: Actualizar el contador de reproducciones en la interfaz
+                videoViews.textContent = `Reproducciones: ${viewsData.updatedViewsCount || video.viewsCount + 1}`;
+            })
+            .catch(error => {
+                console.error("Error al aumentar las reproducciones:", error);
+            });*/
+
         })
         .catch(error => {
             console.error("Error al cargar el video:", error);
         });
 }
+
 
 // Función para agregar el video a favoritos
 function addToFavorites(video) {
@@ -293,8 +313,18 @@ function addComment(videoId) {
     })
     .then(newComment => {
         document.getElementById("comment-text").value = "";
-
-        loadCommentsWithoutReloadingVideo(videoId);
+    
+        // Opcional: añadir el nuevo comentario directamente a la lista sin recargar todo
+        const commentsContainer = document.getElementById("comments-list");
+        const newCommentElement = document.createElement("div");
+        newCommentElement.innerHTML = `
+            <p><strong>Comentario #${newComment.id}:</strong> ${newComment.comment}</p>
+            <small>Creado en: ${new Date(newComment.creationDate).toLocaleString()}</small>
+        `;
+        commentsContainer.appendChild(newCommentElement);
+    
+        // Llamada para cargar todos los comentarios sin recargar el video
+        //loadCommentsWithoutReloadingVideo(videoId);
     })
     .catch(error => {
         commentError.textContent = "Hubo un error al agregar el comentario. Inténtalo de nuevo.";
@@ -303,11 +333,6 @@ function addComment(videoId) {
     });
 }
 
-document.getElementById("add-comment-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const videoId = document.getElementById("video-id").value;
-    addComment(videoId);
-});
 
 // Nueva función para cargar comentarios sin detener el video
 function loadCommentsWithoutReloadingVideo(videoId) {

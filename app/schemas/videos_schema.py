@@ -16,6 +16,7 @@ class VideoResponse(BaseModel):
     creationDate: str  # Aquí mantenemos el campo como string
     videoPath: str
     thumbnailPath: Optional[str] = None
+    viewsCount: int
     isFavorite: bool
 
     @validator('creationDate', pre=True, always=True)
